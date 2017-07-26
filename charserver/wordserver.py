@@ -16,6 +16,7 @@ async def handle(request):
         text += ' '.join(chars)
     return web.Response(text=text)
 
+
 if __name__ == '__main__':
     index = {}
     words.build_index(index)

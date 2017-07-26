@@ -1,12 +1,12 @@
-import sys
-import unicodedata
 from aiohttp import web
 
 import words
 
+
 async def usage(request):
     return web.Response(text='use /<word> to get list of characters '
                              'with that word in their Unicode names')
+
 
 async def handle(request):
     word = request.match_info.get('word', '')

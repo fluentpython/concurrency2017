@@ -3,6 +3,7 @@ import itertools
 
 from word import named_chars, build_index
 
+
 @pytest.fixture
 def first_5():
     return [(' ', 'SPACE'),

@@ -24,8 +24,8 @@ def build_index(char_names=None):
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:
-        print('use words.py <word> to get list of characters '
-              'with that word in their Unicode names')
+        print('use word.py <word> to get list of characters '
+              'with <word> in their Unicode names')
         sys.exit(1)
 
     index = build_index(named_chars())

@@ -1,11 +1,11 @@
 from aiohttp import web
 
-import words
+from word import build_index
 
 
 async def usage(request):
     return web.Response(text='use /<word> to get list of characters '
-                             'with that word in their Unicode names')
+                             'with <word> in their Unicode names')
 
 
 async def handle(request):
@@ -18,8 +18,7 @@ async def handle(request):
 
 
 if __name__ == '__main__':
-    index = {}
-    words.build_index(index)
+    index = build_index()
 
     app = web.Application()
     app.router.add_get('/', usage)

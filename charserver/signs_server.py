@@ -1,6 +1,8 @@
+#!/usr/bin/env python3
+
 from aiohttp import web
 
-from word import build_index
+from signs import build_index
 
 
 async def usage(request):

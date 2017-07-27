@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import sys
 import unicodedata
 
@@ -5,10 +7,9 @@ import unicodedata
 def named_chars():
     for code in range(sys.maxunicode):
         char = chr(code)
-        try:
-            yield char, unicodedata.name(char)
-        except ValueError:  # no such name
-            continue
+        name = unicodedata.name(char, None)
+        if name is not None:
+            yield char, name
 
 
 def build_index(char_names=None):

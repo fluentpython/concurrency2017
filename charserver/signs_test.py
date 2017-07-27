@@ -1,7 +1,7 @@
 import pytest
 import itertools
 
-from word import named_chars, build_index
+from signs import named_chars, build_index
 
 
 @pytest.fixture

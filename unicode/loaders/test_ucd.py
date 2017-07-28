@@ -2,6 +2,13 @@ import itertools
 
 import ucd
 
+ABC_LINES = '''
+0040;COMMERCIAL AT;Po;0;ON;;;;;N;;;;;
+0041;LATIN CAPITAL LETTER A;Lu;0;L;;;;;N;;;;0061;
+0042;LATIN CAPITAL LETTER B;Lu;0;L;;;;;N;;;;0062;
+0043;LATIN CAPITAL LETTER C;Lu;0;L;;;;;N;;;;0063;
+'''.strip()
+
 
 def test_parse_line():
     line_A = '0041;LATIN CAPITAL LETTER A;Lu;0;L;;;;;N;;;;0061;'
@@ -34,4 +41,26 @@ def test_parser_top_3():
             (32, 'SPACE', '', ['SPACE']),
             (33, 'EXCLAMATION MARK', '', ['EXCLAMATION', 'MARK']),
             (34, 'QUOTATION MARK', '', ['MARK', 'QUOTATION']),
-        ]
+    ]
+
+
+def test_index():
+    line = '003E;GREATER-THAN SIGN;Sm;0;ON;;;;;Y;;;;;'
+    record = ucd.parse_line(line)
+    idx = ucd.index([record])
+    assert idx == {'GREATER': [62], 'SIGN': [62], 'THAN': [62]}
+
+
+def test_index_abc():
+    records = [ucd.parse_line(line) for line in ABC_LINES.split('\n')]
+    idx = ucd.index(records)
+    assert idx == {
+        'A': [65],
+        'AT': [64],
+        'B': [66],
+        'C': [67],
+        'CAPITAL': [65, 66, 67],
+        'COMMERCIAL': [64],
+        'LATIN': [65, 66, 67],
+        'LETTER': [65, 66, 67],
+    }

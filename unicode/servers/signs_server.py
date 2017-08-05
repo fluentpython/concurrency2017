@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
 
+import time
+import unicodedata
+import asyncio
+import sys
+
 from aiohttp import web
+import click
 
 from signs import build_index
-
-import unicodedata
 
 PORT = 8000
 
@@ -19,12 +23,21 @@ async def usage(request):
 
 
 async def index_for(request):
-    word = request.match_info.get('word', '')
-    chars = index.get(word.upper(), [])
-    text = f'{len(chars)} found\n'
-    if chars:
-        text += ' '.join(chars)
-    return web.Response(text=text)
+    print('!' if semaphore.locked() else '.', end='')
+    sys.stdout.flush()
+    async with semaphore:
+        word = request.match_info.get('word', '')
+        chars = index.get(word.upper(), [])
+        text = f'{len(chars)} found\n'
+        if chars:
+            text += ' '.join(chars)
+        if global_sleep:
+            time.sleep(global_sleep)
+        if local_sleep:
+            await asyncio.sleep(local_sleep)
+
+        return web.Response(text=text)
+
 
 async def char_name(request):
     char = request.match_info.get('char', '')
@@ -37,7 +50,18 @@ async def char_name(request):
     return web.Response(text=text)
 
 
-if __name__ == '__main__':
+@click.command()
+@click.option('-g', 'global_delay', default=0.0)
+@click.option('-l', 'local_delay', default=0.0)
+@click.option('-c', 'concurrency', default=sys.maxsize)
+def main(global_delay, local_delay, concurrency):
+    global global_sleep, local_sleep, semaphore, index
+    global_sleep = global_delay
+    local_sleep = local_delay
+    semaphore = asyncio.Semaphore(concurrency)
+    print('Global delay =', global_delay)
+    print('Local delay =', local_delay)
+    print('Max. concurrency =', concurrency)
     print('Building inverted index...')
     index = build_index()
 
@@ -48,3 +72,8 @@ if __name__ == '__main__':
 
     print('Listening on port', PORT)
     web.run_app(app, port=PORT)
+
+
+
+if __name__ == '__main__':
+    main()

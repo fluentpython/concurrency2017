@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """Download flags of countries (with error handling).
 
 Sequential version

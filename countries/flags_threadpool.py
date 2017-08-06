@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """Download flags of top 20 countries by population
 
 ThreadPoolExecutor version
@@ -5,17 +7,11 @@ ThreadPoolExecutor version
 Sample run::
 
     $ python3 flags_threadpool.py
-    BD retrieved.
-    EG retrieved.
-    CN retrieved.
-    ...
-    PH retrieved.
-    US retrieved.
-    IR retrieved.
+    BR BD EG CN ID DE IN JP ET NG VN RU CD IR MX PH PK US TR FR
     20 flags downloaded in 0.93s
 
 """
-# BEGIN FLAGS_THREADPOOL
+
 from concurrent import futures
 
 from flags import save_flag, get_flag, show, main  # <1>
@@ -40,4 +36,3 @@ def download_many(cc_list):
 
 if __name__ == '__main__':
     main(download_many)  # <8>
-# END FLAGS_THREADPOOL

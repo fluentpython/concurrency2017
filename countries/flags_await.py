@@ -1,6 +1,8 @@
+#!/usr/bin/env python3
+
 """Download flags of top 20 countries by population
 
-asyncio + aiottp version
+asyncio await + aiottp version
 
 Sample run::
 
@@ -9,7 +11,7 @@ Sample run::
     20 flags downloaded in 1.07s
 
 """
-# BEGIN FLAGS_ASYNCIO
+
 import asyncio
 
 import aiohttp  # <1>
@@ -17,30 +19,34 @@ import aiohttp  # <1>
 from flags import BASE_URL, save_flag, show, main  # <2>
 
 
-async def get_flag(cc):  # <3>
+async def get_flag(client, cc):  # <3>
     url = '{}/{cc}/{cc}.gif'.format(BASE_URL, cc=cc.lower())
-    resp = await aiohttp.request('GET', url)  # <4>
-    image = await resp.read()  # <5>
-    return image
+    async with client.get(url) as resp:  # <4>
+        assert resp.status == 200
+        return await resp.read()  # <5>
 
 
-async def download_one(cc):  # <6>
-    image = await get_flag(cc)  # <7>
+async def download_one(client, cc):  # <6>
+    image = await get_flag(client, cc)  # <7>
     show(cc)
     save_flag(image, cc.lower() + '.gif')
     return cc
 
 
-def download_many(cc_list):
-    loop = asyncio.get_event_loop()  # <8>
-    to_do = [download_one(cc) for cc in sorted(cc_list)]  # <9>
-    wait_coro = asyncio.wait(to_do)  # <10>
-    res, _ = loop.run_until_complete(wait_coro)  # <11>
-    loop.close() # <12>
+async def download_many(loop, cc_list):
+    async with aiohttp.ClientSession(loop=loop) as client:  # <8>
+        to_do = [download_one(client, cc) for cc in sorted(cc_list)]  # <9>
+        res = await asyncio.gather(*to_do)
+    return len(res)  # <10>
 
-    return len(res)
+
+def start(cc_list):
+    loop = asyncio.get_event_loop()  # <11>
+    res = loop.run_until_complete(download_many(loop, cc_list))  # <12>
+    loop.close()  # <13>
+    return res
 
 
 if __name__ == '__main__':
-    main(download_many)
+    main(start)
 # END FLAGS_ASYNCIO

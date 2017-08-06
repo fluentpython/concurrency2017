@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """Download flags of top 20 countries by population
 
 Sequential version
@@ -9,7 +11,7 @@ Sample run::
     20 flags downloaded in 10.16s
 
 """
-# BEGIN FLAGS_PY
+
 import os
 import time
 import sys

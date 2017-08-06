@@ -34,8 +34,8 @@ def slow_function():
 
 
 @asyncio.coroutine  # <6>
-def supervisor():
-    spinner = asyncio.ensure_future(spin('thinking!'))  # <7>
+def supervisor(loop):
+    spinner = loop.create_task(spin('thinking!'))  # <7>
     print('spinner object:', spinner)  # <8>
     result = yield from slow_function()  # <9>
     spinner.cancel()  # <10>
@@ -44,7 +44,7 @@ def supervisor():
 
 def main():
     loop = asyncio.get_event_loop()  # <11>
-    result = loop.run_until_complete(supervisor())  # <12>
+    result = loop.run_until_complete(supervisor(loop))  # <12>
     loop.close()
     print('Answer:', result)
 

@@ -31,8 +31,8 @@ async def slow_function():  # <4>
     return 42
 
 
-async def supervisor():  # <6>
-    spinner = asyncio.ensure_future(spin('thinking!'))  # <7>
+async def supervisor(loop):  # <6>
+    spinner = loop.create_task(spin('thinking!'))  # <7>
     print('spinner object:', spinner)  # <8>
     result = await slow_function()  # <9>
     spinner.cancel()  # <10>
@@ -41,7 +41,7 @@ async def supervisor():  # <6>
 
 def main():
     loop = asyncio.get_event_loop()  # <11>
-    result = loop.run_until_complete(supervisor())  # <12>
+    result = loop.run_until_complete(supervisor(loop))  # <12>
     loop.close()
     print('Answer:', result)
 

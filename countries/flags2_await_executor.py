@@ -5,10 +5,9 @@
 asyncio async/await version using thread pool to save files
 
 """
-# BEGIN FLAGS2_ASYNCIO_TOP
+
 import asyncio
 import collections
-from contextlib import closing
 
 import aiohttp
 from aiohttp import web
@@ -22,14 +21,14 @@ DEFAULT_CONCUR_REQ = 5
 MAX_CONCUR_REQ = 1000
 
 
-class FetchError(Exception):  # <1>
+class FetchError(Exception):
     def __init__(self, country_code):
         self.country_code = country_code
 
 
-async def get_flag(client, base_url, cc): # <2>
+async def get_flag(client, base_url, cc):
     url = '{}/{cc}/{cc}.gif'.format(base_url, cc=cc.lower())
-    async with client.get(url) as resp:  # <4>
+    async with client.get(url) as resp:
         if resp.status == 200:
             return await resp.read()
         elif resp.status == 404:
@@ -40,19 +39,18 @@ async def get_flag(client, base_url, cc): # <2>
                 headers=resp.headers)
 
 
-async def download_one(client, cc, base_url, semaphore, verbose):  # <3>
+async def download_one(client, cc, base_url, semaphore, verbose):
     try:
-        async with semaphore:  # <4>
-            image = await get_flag(client, base_url, cc)  # <5>
-    except web.HTTPNotFound:  # <6>
+        async with semaphore:
+            image = await get_flag(client, base_url, cc)
+    except web.HTTPNotFound:
         status = HTTPStatus.not_found
         msg = 'not found'
     except Exception as exc:
-        raise FetchError(cc) from exc  # <7>
+        raise FetchError(cc) from exc
     else:
-        client.loop.run_in_executor(None,  # <2>
-                save_flag, image, cc.lower() + '.gif')  # <3>
-        save_flag(image, cc.lower() + '.gif')  # <8>
+        client.loop.run_in_executor(None, save_flag, image,
+                                    cc.lower() + '.gif')
         status = HTTPStatus.ok
         msg = 'OK'
 
@@ -60,9 +58,8 @@ async def download_one(client, cc, base_url, semaphore, verbose):  # <3>
         print(cc, msg)
 
     return Result(status, cc)
-# END FLAGS2_ASYNCIO_TOP
 
-# BEGIN FLAGS2_ASYNCIO_DOWNLOAD_MANY
+
 async def downloader_coro(loop, cc_list, base_url, verbose, concur_req):  # <1>
     counter = collections.Counter()
     semaphore = asyncio.Semaphore(concur_req)  # <2>

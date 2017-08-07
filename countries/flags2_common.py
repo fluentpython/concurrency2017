@@ -22,9 +22,9 @@ MAX_CONCUR_REQ = 1
 
 SERVERS = {
     'REMOTE': 'http://flupy.org/data/flags',
-    'LOCAL':  'http://localhost:8001/flags',
-    'DELAY':  'http://localhost:8002/flags',
-    'ERROR':  'http://localhost:8003/flags',
+    'LOCAL': 'http://localhost:8001/flags',
+    'DELAY': 'http://localhost:8002/flags',
+    'ERROR': 'http://localhost:8003/flags',
 }
 DEFAULT_SERVER = 'LOCAL'
 
@@ -70,7 +70,7 @@ def expand_cc_args(every_cc, all_cc, cc_args, limit):
     codes = set()
     A_Z = string.ascii_uppercase
     if every_cc:
-        codes.update(a+b for a in A_Z for b in A_Z)
+        codes.update(a + b for a in A_Z for b in A_Z)
     elif all_cc:
         with open(COUNTRY_CODES_FILE) as fp:
             text = fp.read()
@@ -78,12 +78,12 @@ def expand_cc_args(every_cc, all_cc, cc_args, limit):
     else:
         for cc in (c.upper() for c in cc_args):
             if len(cc) == 1 and cc in A_Z:
-                codes.update(cc+c for c in A_Z)
+                codes.update(cc + c for c in A_Z)
             elif len(cc) == 2 and all(c in A_Z for c in cc):
                 codes.add(cc)
             else:
                 msg = 'each CC argument must be A to Z or AA to ZZ.'
-                raise ValueError('*** Usage error: '+msg)
+                raise ValueError('*** Usage error: ' + msg)
     return sorted(codes)[:limit]
 
 

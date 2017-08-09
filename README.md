@@ -25,6 +25,9 @@ https://serverfault.com/questions/274252/apache-ab-please-explain-the-output
 
 http://infoheap.com/ab-apache-bench-load-testing/ (graphic output)
 
+concurrency * timetaken * 1000 / done
+              timetaken * 1000 / done
+
 
 ### Configuration notes
 

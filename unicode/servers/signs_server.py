@@ -12,12 +12,12 @@ from signs import build_index
 
 PORT = 8000
 
+
 async def usage(request):
     text = (
         'use\t/index/«word» to get list of characters '
         'with «word» in their Unicode names\n'
         '\t/name/«c» to get Unicode name of character «c»'
-
     )
     return web.Response(text=text)
 
@@ -39,14 +39,28 @@ async def index_for(request):
         return web.Response(text=text)
 
 
+def parse_codepoint(codepoint):
+    codepoint = codepoint.replace('U+', '')
+    try:
+        return chr(int(codepoint, 16))
+    except ValueError:
+        raise web.HTTPBadRequest(
+            text='Invalid hex number after U+ codepoint prefix.')
+
+
 async def char_name(request):
     char = request.match_info.get('char', '')
+    if char.upper().startswith('U+'):
+        char = parse_codepoint(char)
     if len(char) > 1:
-        raise web.HTTPBadRequest(text='Only one character per request is allowed.')
+        raise web.HTTPBadRequest(
+            text='Only one character per request is allowed.')
     name = unicodedata.name(char, None)
+    codepoint = 'U+{:04X}'.format(ord(char))
     if name is None:
-        raise web.HTTPNotFound(text='No name for character {} in Unicode 9.'.format(char))
-    text = f'U+{ord(char):04x}\t{char}\t{name}'
+        raise web.HTTPNotFound(text=
+            'No name for character {} in Unicode 9.'.format(codepoint))
+    text = '\t'.join([codepoint, name, char])
     return web.Response(text=text)
 
 
@@ -72,7 +86,6 @@ def main(global_delay, local_delay, concurrency):
 
     print('Listening on port', PORT)
     web.run_app(app, port=PORT)
-
 
 
 if __name__ == '__main__':

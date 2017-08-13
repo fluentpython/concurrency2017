@@ -30,6 +30,7 @@ async def countdown(label, delay):
     while n > 0:
         await asyncio.sleep(delay)  # <---- <A>
         dt = time.perf_counter() - t0
+        print('━' * 50)
         print('{:7.4f}s \t{}{} = {}'.format(dt, tabs, label, n))
         n -= 1
 
@@ -43,3 +44,4 @@ tasks = [
 t0 = time.perf_counter()
 loop.run_until_complete(asyncio.wait(tasks))
 loop.close()
+print('━' * 50)

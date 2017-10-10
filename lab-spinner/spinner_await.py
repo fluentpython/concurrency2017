@@ -1,49 +1,48 @@
 #!/usr/bin/env python3
 
-# spinner_thread.py
+# spinner_await.py
 
-# credits: Adapted from Michele Simionato's
-# multiprocessing example in the python-list:
+# credits: Example by Luciano Ramalho inspired by
+# Michele Simionato's multiprocessing example in the python-list:
 # https://mail.python.org/pipermail/python-list/2009-February/538048.html
 
-import threading
+import asyncio
 import itertools
-import time
 import sys
 
 
-def spin(msg, done):  # <1>
+async def spin(msg):  # <1>
     write, flush = sys.stdout.write, sys.stdout.flush
-    for char in itertools.cycle('|/-\\'):
+    for char in itertools.cycle('|/—\\'):
         status = char + ' ' + msg
         write(status)
         flush()
         write('\x08' * len(status))
-        if done.wait(.1):  # <2>
-            break  # <3>
+        try:
+            await asyncio.sleep(.1)  # <2>
+        except asyncio.CancelledError:  # <3>
+            break
     write(' ' * len(status) + '\x08' * len(status))
 
 
-def slow_function():  # <4>
+async def slow_function():  # <4>
     # pretend waiting a long time for I/O
-    time.sleep(3)  # <5>
+    await asyncio.sleep(3)  # <5>
     return 42
 
 
-def supervisor():  # <6>
-    done = threading.Event()  # <7>
-    spinner = threading.Thread(
-                target=spin, args=('thinking!', done))  # <8>
-    print('spinner object:', spinner)  # <9>
-    spinner.start()  # <10>
-    result = slow_function()  # <11>
-    done.set()  # <12>
-    spinner.join()  # <13>
+async def supervisor(loop):  # <6>
+    spinner = loop.create_task(spin('thinking!'))  # <7>
+    print('spinner object:', spinner)  # <8>
+    result = await slow_function()  # <9>
+    spinner.cancel()  # <10>
     return result
 
 
 def main():
-    result = supervisor()  # <14>
+    loop = asyncio.get_event_loop()  # <11>
+    result = loop.run_until_complete(supervisor(loop))  # <12>
+    loop.close()
     print('Answer:', result)
 
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# spinner_asyncio.py
+# spinner_yield.py
 
 # credits: Example by Luciano Ramalho inspired by
 # Michele Simionato's multiprocessing example in the python-list:

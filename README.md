@@ -1,19 +1,11 @@
 # concurrency
-Example code for the workshop Modern Concurrency in Python
+Example code for the workshop **Modern Concurrency in Python**, first presented at PyBay 2017 in San Francisco.
 
-## Libraries and frameworks
+## Cloning
 
-* asyncio
+For faster cloning, get only the latest version of this repo:
 
-* aiohttp
-
-* aio-libs organization on github
-
-* [Sanic](https://github.com/channelcat/sanic)
-
-* Curio
-
-* Trio
+    $ git clone --depth=1 https://github.com/fluentpython/concurrency.git
 
 
 ## References
@@ -34,3 +26,18 @@ https://gist.github.com/miguelgrinberg/f15bc03471f610cfebeba62438435508) by Migu
 * [Asynchronous Python and Databases](http://techspot.zzzeek.org/2015/02/15/asynchronous-python-and-databases/) by Mike Bayer ([response](https://emptysqua.re/blog/response-to-asynchronous-python-and-databases/) by A. Jesse Jiryu Davis)
 
 * [ConcurrentPython](https://github.com/BruceEckel/ConcurrentPython): notes for an upcoming open book by Bruce Eckel
+
+
+## Libraries and frameworks
+
+* asyncio
+
+* aiohttp
+
+* aio-libs organization on github
+
+* [Sanic](https://github.com/channelcat/sanic)
+
+* Curio
+
+* Trio

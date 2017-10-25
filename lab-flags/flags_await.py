@@ -13,6 +13,7 @@ Sample run::
 """
 
 import asyncio
+import socket
 
 import aiohttp  # <1>
 
@@ -34,7 +35,9 @@ async def download_one(client, cc):  # <6>
 
 
 async def download_many(loop, cc_list):
-    async with aiohttp.ClientSession(loop=loop) as client:  # <8>
+    tcpconnector = aiohttp.TCPConnector(family=socket.AF_INET)
+    async with aiohttp.ClientSession(connector=tcpconnector) as client:
+    # async with aiohttp.ClientSession(loop=loop) as client:  # <8>
         to_do = [download_one(client, cc) for cc in sorted(cc_list)]  # <9>
         res = await asyncio.gather(*to_do)
     return len(res)  # <10>

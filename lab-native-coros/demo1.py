@@ -17,9 +17,9 @@ async def delegating():
 
 # The driving code starts here:
 coro = delegating()
-print(coro)
 
 res = coro.send(None)
 print(res)
 
-coro.send(None)  # --> StopIteration
+res = coro.send(None)
+print(res)  # Never executed. Why?

@@ -8,7 +8,9 @@ import types
 
 @types.coroutine
 def gen123():
-    return (i for i in range(1, 4))
+    yield 1
+    yield 2
+    yield 3
 
 
 async def delegating():

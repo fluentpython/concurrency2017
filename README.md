@@ -1,4 +1,5 @@
-# concurrency
+# Python Concurrency 2017
+
 Example code for the workshop **Modern Concurrency in Python**, first presented at PyBay 2017 in San Francisco.
 
 ## Cloning
